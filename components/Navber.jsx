@@ -9,7 +9,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
 import { ModeToggle } from "./theme-btn";
 import LoadingBar from "react-top-loading-bar";
 import { usePathname } from "next/navigation";
@@ -17,6 +16,7 @@ import { useEffect, useState } from "react";
 
 const Navbar = () => {
   const [progress, setProgress] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
   const pathname = usePathname();
 
   useEffect(() => {
@@ -30,6 +30,11 @@ const Navbar = () => {
       setProgress(100);
     }, 400);
   }, [pathname]);
+
+  const handleLogout = () => {
+    // Logic to handle logout
+    setIsLoggedIn(false);
+  };
 
   return (
     <nav className="p-4 bg-background/50 sticky top-0 border-b z-10 backdrop-blur">
@@ -68,12 +73,24 @@ const Navbar = () => {
             Contact
           </Link>
           <div className="flex items-center">
-            <Button className="mx-1" variant="outline">
-              Login
-            </Button>
-            <Button className="mx-1" variant="outline">
-              SignUp
-            </Button>
+            {isLoggedIn ? (
+              <Button className="mx-1" variant="outline" onClick={handleLogout}>
+                Logout
+              </Button>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button className="mx-1" variant="outline">
+                    Login
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button className="mx-1" variant="outline">
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            )}
             <ModeToggle />
           </div>
         </div>
@@ -83,29 +100,30 @@ const Navbar = () => {
               <ModeToggle />
             </span>
             <SheetTrigger>
-              <button
-                className="text-black focus:outline-none"
-                aria-label="Open navigation menu"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16m-7 6h7"
-                  />
-                </svg>
-              </button>
+            <button
+  className="text-black dark:text-white focus:outline-none"
+  aria-label="Open navigation menu"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-6 w-6"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M4 6h16M4 12h16m-7 6h7"
+    />
+  </svg>
+</button>
+
             </SheetTrigger>
             <SheetContent>
               <SheetHeader>
-                <SheetTitle className="font-bold my-4">AkkiBlog</SheetTitle>
+                <SheetTitle className="font-bold my-4">AnkitBlog</SheetTitle>
                 <SheetDescription>
                   <div className="flex flex-col gap-6">
                     <Link href="/" className="text-gray-300 hover:text-white">
@@ -129,13 +147,25 @@ const Navbar = () => {
                     >
                       Contact
                     </Link>
-                    <div>
-                      <Button className="mx-1 text-xm" variant="outline">
-                        Login
-                      </Button>
-                      <Button className="mx-1 text-xm" variant="outline">
-                        SignUp
-                      </Button>
+                    <div className="flex items-center">
+                      {isLoggedIn ? (
+                        <Button className="mx-1" variant="outline" onClick={handleLogout}>
+                          Logout
+                        </Button>
+                      ) : (
+                        <>
+                          <Link href="/login">
+                            <Button className="mx-1" variant="outline">
+                              Login
+                            </Button>
+                          </Link>
+                          <Link href="/signup">
+                            <Button className="mx-1" variant="outline">
+                              Sign Up
+                            </Button>
+                          </Link>
+                        </>
+                      )}
                     </div>
                   </div>
                 </SheetDescription>
