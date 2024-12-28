@@ -13,11 +13,12 @@ import { ModeToggle } from "./theme-btn";
 import LoadingBar from "react-top-loading-bar";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 
 const Navbar = () => {
   const [progress, setProgress] = useState(0);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   useEffect(() => {
     setProgress(20);
@@ -32,8 +33,7 @@ const Navbar = () => {
   }, [pathname]);
 
   const handleLogout = () => {
-    // Logic to handle logout
-    setIsLoggedIn(false);
+    signOut({ callbackUrl: "/" });
   };
 
   return (
@@ -72,8 +72,16 @@ const Navbar = () => {
           >
             Contact
           </Link>
+          {session && session.user.role === 'admin' && (
+            <Link
+              href="/admin"
+              className="hover:scale-105 transition-transform duration-300"
+            >
+              Admin
+            </Link>
+          )}
           <div className="flex items-center">
-            {isLoggedIn ? (
+            {session ? (
               <Button className="mx-1" variant="outline" onClick={handleLogout}>
                 Logout
               </Button>
@@ -100,26 +108,25 @@ const Navbar = () => {
               <ModeToggle />
             </span>
             <SheetTrigger>
-            <button
-  className="text-black dark:text-white focus:outline-none"
-  aria-label="Open navigation menu"
->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-6 w-6"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M4 6h16M4 12h16m-7 6h7"
-    />
-  </svg>
-</button>
-
+              <button
+                className="text-black dark:text-white focus:outline-none"
+                aria-label="Open navigation menu"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16m-7 6h7"
+                  />
+                </svg>
+              </button>
             </SheetTrigger>
             <SheetContent>
               <SheetHeader>
@@ -147,9 +154,21 @@ const Navbar = () => {
                     >
                       Contact
                     </Link>
+                    {session && session.user.role === 'admin' && (
+                      <Link
+                        href="/admin"
+                        className="text-gray-300 hover:text-white"
+                      >
+                        Admin
+                      </Link>
+                    )}
                     <div className="flex items-center">
-                      {isLoggedIn ? (
-                        <Button className="mx-1" variant="outline" onClick={handleLogout}>
+                      {session ? (
+                        <Button
+                          className="mx-1"
+                          variant="outline"
+                          onClick={handleLogout}
+                        >
                           Logout
                         </Button>
                       ) : (
